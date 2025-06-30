@@ -1,10 +1,10 @@
-develop: clean build run
+develop: clean build 
 
-run:
-	docker compose up
+run: migrate.up
+	docker compose up backend
 
 build:
-	docker compose build	
+	docker compose build backend	
 
 clean:
 	docker compose rm -vf 
