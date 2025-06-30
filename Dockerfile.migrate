@@ -1,0 +1,11 @@
+FROM golang:1.24.4-alpine3.21 AS goose-builder
+
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+
+WORKDIR /app
+
+COPY internal/db/migrations ./internal/db/migrations
+
+ENTRYPOINT ["goose"]
+
+

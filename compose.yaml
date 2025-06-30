@@ -1,0 +1,34 @@
+services: 
+  backend:
+    build: .
+    container_name: sre-bootcamp-backend
+    env_file: ".env.example"
+    ports:
+      - "8080:8080"
+    depends_on:
+       postgres-db:
+         condition: service_healthy
+  
+  postgres-db:
+    image: postgres:16-bookworm
+    env_file: ".env.example" 
+    healthcheck:
+      # postgres tries to connect to a database with the same name as your user. 
+      # To prevent this default behaviour, just specify user and database
+      # Though the healthcheck will pass, but we will get error messages logged in the container
+      test: ["CMD-SHELL", "pg_isready -U myuser -d students_db" ]  
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  
+  migrate:
+    env_file: ".env.example"
+    profiles: ["migrations"]
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate 
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    entrypoint: ["goose"]
