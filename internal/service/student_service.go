@@ -8,6 +8,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type IStudentService interface {
+	CreateStudent(stu *model.Student) (*model.Student, error)
+	GetAllStudents() ([]model.Student, error)
+	GetStudent(id string) (*model.Student, error)
+	UpdateStudent(id string, stu *model.Student) (*model.Student, error)
+	DeleteStudent(id string) error
+}
+
 type StudentService struct {
 	repo *repository.StudentRepository
 }

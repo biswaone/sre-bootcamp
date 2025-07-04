@@ -9,11 +9,11 @@ import (
 )
 
 type Handler struct {
-	service *service.StudentService
+	service service.IStudentService
 }
 
-func NewHandler() *Handler {
-	return &Handler{service: service.NewStudentService()}
+func NewHandler(svc service.IStudentService) *Handler {
+	return &Handler{service: svc}
 }
 
 func (h *Handler) CreateStudent(c *gin.Context) {
