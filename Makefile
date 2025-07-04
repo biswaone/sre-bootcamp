@@ -1,4 +1,4 @@
-develop: clean build 
+develop: clean build run 
 
 run: migrate.up
 	docker compose up backend
@@ -16,4 +16,3 @@ db.start:
 
 migrate.up:db.start
 	docker compose --profile migrations run --rm migrate up
-	
