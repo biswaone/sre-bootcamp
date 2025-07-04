@@ -16,3 +16,6 @@ db.start:
 
 migrate.up:db.start
 	docker compose --profile migrations run --rm migrate up
+
+test:
+	go test -v ./...
