@@ -59,14 +59,14 @@ func TestCreateStudentHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockService := new(MockStudentService)
 	handler := NewHandler(mockService)
-
 	router := gin.New()
 	router.POST("/students", handler.CreateStudent)
 
 	inputStudent := model.Student{Name: "Test", Email: "test@test.com"}
 	expectedStudent := model.Student{ID: "new-uuid", Name: "Test", Email: "test@test.com"}
 
-	mockService.On("CreateStudent", &inputStudent).Return(&expectedStudent, nil).Once()
+	mockInput := model.Student{Name: "Test", Email: "test@test.com"}
+	mockService.On("CreateStudent", &mockInput).Return(&expectedStudent, nil).Once()
 
 	// Act
 	body, _ := json.Marshal(inputStudent)
@@ -77,7 +77,8 @@ func TestCreateStudentHandler(t *testing.T) {
 	// Assert
 	assert.Equal(t, http.StatusCreated, w.Code)
 	var responseStudent model.Student
-	json.Unmarshal(w.Body.Bytes(), &responseStudent)
+	err := json.Unmarshal(w.Body.Bytes(), &responseStudent)
+	assert.NoError(t, err)
 	assert.Equal(t, expectedStudent, responseStudent)
 	mockService.AssertExpectations(t)
 }
@@ -87,7 +88,6 @@ func TestGetStudentHandler_NotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockService := new(MockStudentService)
 	handler := NewHandler(mockService)
-
 	router := gin.New()
 	router.GET("/students/:id", handler.GetStudent)
 
@@ -109,7 +109,6 @@ func TestGetAllStudentsHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockService := new(MockStudentService)
 	handler := NewHandler(mockService)
-
 	router := gin.New()
 	router.GET("/students", handler.GetAllStudents)
 
@@ -117,7 +116,6 @@ func TestGetAllStudentsHandler(t *testing.T) {
 		{ID: "uuid-1", Name: "John Doe", Email: "john@example.com"},
 		{ID: "uuid-2", Name: "Jane Doe", Email: "jane@example.com"},
 	}
-
 	mockService.On("GetAllStudents").Return(expectedStudents, nil).Once()
 
 	// Act
@@ -128,7 +126,8 @@ func TestGetAllStudentsHandler(t *testing.T) {
 	// Assert
 	assert.Equal(t, http.StatusOK, w.Code)
 	var responseStudents []model.Student
-	json.Unmarshal(w.Body.Bytes(), &responseStudents)
+	err := json.Unmarshal(w.Body.Bytes(), &responseStudents)
+	assert.NoError(t, err)
 	assert.Equal(t, expectedStudents, responseStudents)
 	mockService.AssertExpectations(t)
 }
@@ -138,7 +137,6 @@ func TestUpdateStudentHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockService := new(MockStudentService)
 	handler := NewHandler(mockService)
-
 	router := gin.New()
 	router.PUT("/students/:id", handler.UpdateStudent)
 
@@ -157,7 +155,8 @@ func TestUpdateStudentHandler(t *testing.T) {
 	// Assert
 	assert.Equal(t, http.StatusOK, w.Code)
 	var responseStudent model.Student
-	json.Unmarshal(w.Body.Bytes(), &responseStudent)
+	err := json.Unmarshal(w.Body.Bytes(), &responseStudent)
+	assert.NoError(t, err)
 	assert.Equal(t, expectedStudent, responseStudent)
 	mockService.AssertExpectations(t)
 }
@@ -167,12 +166,10 @@ func TestDeleteStudentHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	mockService := new(MockStudentService)
 	handler := NewHandler(mockService)
-
 	router := gin.New()
 	router.DELETE("/students/:id", handler.DeleteStudent)
 
 	studentID := "uuid-to-delete"
-
 	// For a successful deletion, the service should return nil error.
 	mockService.On("DeleteStudent", studentID).Return(nil).Once()
 
