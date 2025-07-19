@@ -2,7 +2,7 @@
 apt-get update
 
 # Install required packages
-apt-get install -y ca-certificates curl gnupg git
+apt-get install -y ca-certificates curl gnupg git make
 
 # Add Docker's official GPG key
 install -m 0755 -d /etc/apt/keyrings
