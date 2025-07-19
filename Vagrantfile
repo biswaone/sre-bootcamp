@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   # Start sre-bootcamp (can be rerun with vagrant provision --provision-with start-sre-bootcamp)
   config.vm.provision "shell", name: "start-sre-bootcamp", inline: <<-SHELL
     cd /home/vagrant/sre-bootcamp
-    docker compose up -d
+    make run
   SHELL
 end
 
