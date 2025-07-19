@@ -1,7 +1,7 @@
 develop: clean build run 
 
 run: migrate.up
-	docker compose up backend
+	docker compose up -d
 
 build:
 	docker compose build backend	
