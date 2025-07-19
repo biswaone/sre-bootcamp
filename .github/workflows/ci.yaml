@@ -5,6 +5,11 @@ on:
     branches: [ "main" ]
     tags:
       - 'v*.*.*'  
+    paths:
+      - 'cmd/**'
+      - 'internal/**'
+      - 'go.mod'
+      - 'go.sum' 
   pull_request:
     branches: [ "main" ]
     paths:
