@@ -1,14 +1,29 @@
 services: 
-  backend:
+
+  backend-1:
     build: .
-    container_name: sre-bootcamp-backend
+    container_name: sre-bootcamp-backend-1
     env_file: ".env.example"
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080" 
+    environment:
+      - PORT=8080
     depends_on:
-       postgres-db:
-         condition: service_healthy
+      postgres-db:
+        condition: service_healthy 
   
+  backend-2:
+    build: .
+    container_name: sre-bootcamp-backend-2
+    env_file: ".env.example"
+    expose:
+      - "8080"
+    environment:
+      - PORT=8080
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
   postgres-db:
     image: postgres:16-bookworm
     env_file: ".env.example" 
@@ -32,3 +47,14 @@ services:
       postgres-db:
         condition: service_healthy
     entrypoint: ["goose"]
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx-load-balancer
+    ports:
+      - "8080:80"  
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend-1
+      - backend-2
